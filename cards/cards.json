@@ -1,0 +1,21 @@
+{
+    "OGN-001": {
+        "Name": "Blazing Scorcher",
+        "Number": "001",
+        "Set": "OGN",
+        "Type": "Unit",
+        "Domain": "Fury",
+        "Energy": 5,
+        "Might" : 5,
+        "Tags": ["Dragon", "Noxus"],
+        "Rarity": "Common",
+        "Standard": true,
+        "2v2": true,
+        "Effect": "Accelerate"
+    }
+
+
+
+
+
+}
