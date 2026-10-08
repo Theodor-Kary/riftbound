@@ -9,7 +9,6 @@ from typing import Callable, Optional
 
 
 
-@dataclass(frozen=True)
 class RulesConfig:
     number_of_players: int = 2
     formation_of_players: str = "1v1"
@@ -23,26 +22,39 @@ class RulesConfig:
 
 
 
-def Phase():
-    awaken = 1
-    beginning = 2
-    channel = 3
-    draw = 4
-    action = 5
-    end = 6
+class Phase(Enum):
+    awaken = auto()
+    beginning = auto()
+    channel = auto()
+    draw = auto()
+    action = auto()
+    end = auto()
 
 
 
 
-@dataclass
-class GameState():
+
+
+
+
+
+
+
+
+
+
+class GameState:
     players: list
+    cards: dict
     battlefield: list
-    rng = random.random
+    rng = int
     phase: Phase.awaken
     turn: int = 1
     log: list
     winner: str = None
+
+
+
 
 
 class Player:
@@ -55,6 +67,10 @@ class Player:
     champion: list
 
 
+
+
+
+
 class PlayerState:
     score: int = 0
     id: str
@@ -64,11 +80,14 @@ class PlayerState:
         "hand": [],
         "runes": [],
         "trash": [],
-        "base": []
+        "base": [],
+        "legend": [],
+        "champion": []
     }
 
-    
-    
+
+
+
 
 class CardDef:
     id: str
@@ -80,51 +99,9 @@ class CardDef:
 
 
 
-class CardInstance:
-    id: str
-    def_id: str
-    owner_id: str
-    exhausted: bool = False
 
 
 
-
-# Actions
-
-class PlayCard():
-    id: str
-
-class ActivateCard():
-    id: str
-
-class MoveCard():
-    id: str
-    destination: str
-
-class EndTrun():
-    pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Battlefield:
-    id: str
-    units: list
-
-
-class Rune:
-    id: str
-    type: str
 
 
 
@@ -150,11 +127,13 @@ class Engine:
 
     def newGame(self, players, seed=0) -> GameState:
         rng = random.Random(seed)
-        player_states = []
-        for p in players:
+
+        cards =
 
 
-
+        player_states = [player_states.append(newPlayer(p)) for p in players]
+        
+        
 
         def newPlayer(player) -> PlayerState:
             state = PlayerState()
@@ -169,14 +148,6 @@ class Engine:
 
 
 
-    def gameTurn():
-
-        print(game_turn)
-        #Awaken:
-
-        #Beginning
-
-        #
 
 
 
