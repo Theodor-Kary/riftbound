@@ -1,15 +1,3 @@
-"""Riftbound engine skeleton.
-
-Structure only: the rules are heavily simplified and anything marked TODO
-needs to be checked against the current Core Rules.
-
-Key ideas:
-  * GameState is plain data. It holds no rules logic.
-  * Engine holds all rules logic and (almost) no state.
-  * Players interact only through Action objects.
-  * The engine auto-advances through phases that need no decision and
-    stops when a player actually has to choose something.
-"""
 from __future__ import annotations
 
 import copy
@@ -24,11 +12,15 @@ from typing import Callable, Optional
 # --------------------------------------------------------------------------
 @dataclass(frozen=True)
 class RulesConfig:
-    points_to_win: int = 8
+    number_of_players: int = 2
+    formation_of_players: str = "1v1"
+    victory_score: int = 8
+    battlefield_count: int = 2
+    best_of: int = 1
     runes_per_turn: int = 2
-    second_player_first_channel: int = 3
-    first_player_skips_first_draw: bool = True
-    opening_hand: int = 4
+    first_player_skips_draw: bool = False
+    last_player_channels_extra_rune: bool = True
+    starting_hand = 4
 
 
 @dataclass(frozen=True)
@@ -41,7 +33,7 @@ class CardDef:  # static, shared by every copy of a card
 
 
 # --------------------------------------------------------------------------
-# Actions: the only way anyone changes the game
+# Actions: only decision the player makes
 # --------------------------------------------------------------------------
 @dataclass(frozen=True)
 class Action:
@@ -98,15 +90,34 @@ class CardInstance:  # runtime object; many can share one CardDef
     damage: int = 0
 
 
+
+
+@dataclass
+class Player:
+    name: str
+    id: str
+    agent_type: str
+    main_deck: list
+    rune_deck: list
+    battlefields: list
+
+
+
+
 @dataclass
 class PlayerState:
     score: int = 0
     # Zones hold card ids, not objects, so cloning stays cheap and cycle-free.
-    zones: dict = field(
-        default_factory=lambda: {
-            z: [] for z in ("deck", "hand", "trash", "rune_deck", "runes", "base")
-        }
-    )
+    zones = {
+        "main_deck": [],
+        "rune_deck": [],
+        "hand": [],
+        "runes": [],
+        "trash": [],
+        "base": [],
+        "legend": [],
+        "champion": []
+    }
 
 
 @dataclass
@@ -158,9 +169,18 @@ class Engine:
         }
 
     # ---- public API (this is all agents and bots ever touch) -------------
-    def new_game(self, decks, rune_decks, battlefield_ids, seed=0) -> GameState:
+    def new_game(self, players: list, seed=0) -> GameState:
         rng = random.Random(seed)
-        cards, players, next_id = {}, [PlayerState(), PlayerState()], 0
+        cards = {}
+        next_id = 0
+        for p in players:
+            state = PlayerState()
+            state.zones["main_deck"] = rng.shuffle(p.main_deck)
+            state.zones["rune_deck"] = rng.shuffle()
+
+        players = [PlayerState() for p in players]
+
+        cards, players, next_id = {}, [Player(), Player()], 0
         for p, (deck, runes) in enumerate(zip(decks, rune_decks)):
             for zone, def_ids in (("deck", deck), ("rune_deck", runes)):
                 for d in def_ids:

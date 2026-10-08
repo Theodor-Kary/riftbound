@@ -1,3 +1,5 @@
+import random
+
 
 #Cards
 class Card:
@@ -40,7 +42,7 @@ class Battlefield:
     cards: list = []
 
 class GameState:
-    player: dict
+    players: dict
     active: str
     seed : int
     cards : dict
@@ -250,7 +252,26 @@ if __name__ == "__main__":
     deck2 = [2, 1, 1]
 
     player1 = Player
+    player1.main_deck = deck1
 
     player2 = Player
+    player2.main_deck = deck2
 
+    s = GameState
+
+    def new_game(s: GameState, players: list):
+        player_id = 0
+        for p in players:
+            p
+
+    
+        active: str
+        seed : int
+        cards : dict
+        phase : int
+        turn : int
+    winner : bool = False
+    battlefield : list
+
+    cards = 
     

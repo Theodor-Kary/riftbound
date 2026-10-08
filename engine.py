@@ -119,25 +119,7 @@ class CardDef:
 
 
 
-class Engine:
-    def __init__(self, cards_db: dict, rules: RulesConfig = RulesConfig()):
-        self.cards_db = cards_db
-        self.rules = rules
 
-
-    def newGame(self, players, seed=0) -> GameState:
-        rng = random.Random(seed)
-
-        cards =
-
-
-        player_states = [player_states.append(newPlayer(p)) for p in players]
-        
-        
-
-        def newPlayer(player) -> PlayerState:
-            state = PlayerState()
-            state.id = player.id
 
 
 
