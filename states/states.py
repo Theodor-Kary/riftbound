@@ -5,7 +5,7 @@ from enum import Enum, auto
 from typing import Callable, Optional
 import json
 
-
+import cards.cards
 
 # --------------------------------------------------------------------------
 # State: data only
@@ -24,32 +24,37 @@ class CardInstance:  # runtime object; many can share one CardDef
     id: int
     def_id: str
     owner_id: str
-    control_id: str
+    control_id: str = owner_id
     might_mod: int = 0
     energy_mod: int = 0
     damage: int = 0
     exhausted: bool = False
-    location: str = None
+    location: list = []
 
 
-@dataclass
-class Player:
-    name: str
-    id: str
-    agent_type: str
-    main_deck: list
-    rune_deck: list
-    legend : list
-    champion : list
-    battlefields: list
+
 
 
 
 
 @dataclass
 class PlayerState:
+    
+    # Zones hold card_instance.id
+
+
+
+@dataclass
+class Player:
+    id: int
+    name: str
+    agent_type: str
+    main_deck: Iterable[str]
+    rune_deck: Iterable[str]
+    champion : str
+    battlefields: str
+    legend : str
     score: int = 0
-    # Zones hold card ids, not objects, so cloning stays cheap and cycle-free.
     zones = {
         "main_deck": [],
         "rune_deck": [],
@@ -57,10 +62,8 @@ class PlayerState:
         "runes": [],
         "trash": [],
         "base": [],
-        "legend": [],
         "champion": []
     }
-
 
 @dataclass
 class Battlefield:
@@ -70,10 +73,10 @@ class Battlefield:
 
 @dataclass
 class GameState:
-    card_registry: dict
-    players: list
-    battlefields: list
-    rng: random.Random
+    cards: dict = {}
+    players: dict = {}
+    battlefields: dict = {}
+    rng: int = random.Random()
     active: int = 0
     turn: int = 1
     phase: Phase = Phase.AWAKEN

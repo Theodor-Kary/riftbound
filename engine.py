@@ -44,44 +44,47 @@ class Engine:
 
     # ---- public API (this is all agents and bots ever touch) -------------
     def new_game(self, players: Iterable[Player], seed=0) -> GameState:
-        
-        s = GameState()
+    
         rng = random.Random(seed)
-        cards = {}
-        #for p in players:
-        #     = PlayerState()
+        s = GameState()
 
-        #    state.zones["main_deck"] = rng.shuffle(p.main_deck)
-        #    state.zones["rune_deck"] = rng.shuffle(p.rune_deck)
+        #TODO: Validation check that player decks follow rule requirments
+
+        for p in players:
+            #Instanciating cards in main deck and assinging ids to main deck zone
+            for def_id in p.main_deck:
+                new_card = self._new_card_instance(self, s, def_id, p.id)
+                s.cards[new_card.id] = new_card
+                p.zone["main_deck"].append(new_card.id)
+                new_card.location = [p.id, "main_deck"]
+            p.zones["main_deck"] = rng.shuffle(p.zones["main_deck"])
+
+            #Instanciating cards in rune deck and assinging ids to rune deck zone
+            for def_id in p.rune_deck:
+                new_card = self._new_card_instance(self, s, def_id, p.id)
+                s.cards[new_card.id] = new_card
+                p.zone["rune_deck"].append(new_card.id)
+                new_card.location = [p.id, "rune_deck"]
+            p.zones["rune_deck"] = rng.shuffle(p.zones["rune_deck"])
+
+            #Instanciating champion card
+            new_card = self._new_card_instance(self, s, p.champion, p.id)
+            s.cards[new_card.id] = new_card
+            p.zones["champion"] = new_card.id
+
+        
+        #battle field
+
+            s.Battlefield[p.battlefield] =  self._new_card_instance(self, s, p.champion, p.id)
 
 
+        #opening hand
+            for _ in range(self.rules.starting_hand):
+                card_id = p.zones["main_deck"][0]
+                self.move_card()
 
-
-
-
-
-
-
-
-
-
-
-        players = [PlayerState() for p in players]
-
-        cards, players, next_id = {}, [Player(), Player()], 0
-        for p, (deck, runes) in enumerate(zip(decks, rune_decks)):
-            for zone, def_ids in (("deck", deck), ("rune_deck", runes)):
-                for d in def_ids:
-                    cards[next_id] = CardInstance(next_id, d, p)
-                    players[p].zones[zone].append(next_id)
-                    next_id += 1
-            rng.shuffle(players[p].zones["deck"])
-            rng.shuffle(players[p].zones["rune_deck"])
-            for _ in range(self.rules.opening_hand):
-                players[p].zones["hand"].append(players[p].zones["deck"].pop())
-        state = GameState(cards, players, [Battlefield(b) for b in battlefield_ids], rng)
-        self._advance(state)
-        return state
+            s.players[p.id] = p 
+        return s
 
     def legal_actions(self, s: GameState) -> list:
         if s.winner is not None:
@@ -216,6 +219,25 @@ class Engine:
 
         card = CardInstance(id, def_id, owner_id, owner_id)
         return card
+    
+    def _move_card(self, s, card_id, destination: [str, str]):
+        
+
+        #Find card_id location
+        #Remove card_id from location
+        #Add card_id to new location
+
+    def _find_card(self, s, card_id):
+        loc = s.cards[card_id].location
+        if card_id in s.players[loc[0]].zones[loc[1]]:
+            return loc
+        else:
+            for uid, p in s.players:
+                for zone, cards in p.zones
+            for bf in s.battlefields
+                return l
+            return None
+
 
 
     def _emit(self, s, name, **data):
@@ -237,11 +259,17 @@ class Engine:
 
 
 if __name__ == "__main__":
-    
 
-    engine = Engine(card_db)
+    CardDef('OGN-001', 'Blazing Scorcher', ["Fury"], 'Unit', None, 5, 5, None, ["Dragon", "Noxus"], "[Accelerate] (You may pay :rb_energy_1::rb_rune_fury: as an additional cost to have me enter ready.)")
 
-    card = engine._new_card_instance()
+
+
+    card_db = CardCatalog.from_json('cards.json')
+
+
+    #engine = Engine(card_db)
+
+    #card = engine._new_card_instance()
 
 
 

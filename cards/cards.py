@@ -18,18 +18,22 @@ class CardDef:  # static, shared by every copy of a card
 
 
 class CardCatalog:
-    cards: Mapping[str, CardDef]
 
-    def _from_json(path) -> CardCatalog:
+    def __init__(self, cards: Mapping[str, CardDef]):
+        self.cards = cards
+
+    def from_json(path) -> CardCatalog:
         data = json.load(open(path).read())
-        next_id = 0
         cards = {}
         for key, d in data:
             effect = _effect_from_text(d['effect'])
             card = CardDef(key, d['name'], d['domain'], d['type'], d['supertype'], d['energy'], d['might'], d['power'], d['tags'], effect)
-            cards[next_id] = card
+            cards[key] = card
 
         return CardCatalog(cards)
+    
+    def __repr__(self):
+        return f'CardCatalog len {len(self.cards)}'
 
-    def _effect_from_text(text: str) -> dict:
-        return {}
+    #def _effect_from_text(text: str) -> dict:
+    #    return {}
