@@ -1,3 +1,5 @@
+from dataclasses import dataclass, field
+
 # --------------------------------------------------------------------------
 # Events: for logging/replays now, triggered abilities later
 # --------------------------------------------------------------------------

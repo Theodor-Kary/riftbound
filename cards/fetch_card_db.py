@@ -5,7 +5,7 @@ import json
 cards = {}
 
 page = 1
-while True:
+while False:
     print(page)
     resp = requests.get("https://api.riftcodex.com/cards", params={"page": page, "size": 100})
     data = resp.json()
@@ -27,10 +27,15 @@ while True:
             "image_url" : i["media"]["image_url"]
         }
 
+
+
     if data["page"] == data["pages"]:
         break
 
     page += 1
+
+resp = requests.get("https://api.riftcodex.com/cards", params={"page": 1, "size": 1})
+print(resp.json())
 
 #with open('cards.json', 'w') as fp:
 #    json.dump(cards, fp)

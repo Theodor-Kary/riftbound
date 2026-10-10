@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Callable, Optional
 
+
 import cards.cards
 import states.states
 import events.events
@@ -45,16 +46,13 @@ class Engine:
     def new_game(self, players: Iterable[Player], seed=0) -> GameState:
         
         s = GameState()
-        
-
-
         rng = random.Random(seed)
         cards = {}
-        for p in players:
-             = PlayerState()
+        #for p in players:
+        #     = PlayerState()
 
-            state.zones["main_deck"] = rng.shuffle(p.main_deck)
-            state.zones["rune_deck"] = rng.shuffle(p.rune_deck)
+        #    state.zones["main_deck"] = rng.shuffle(p.main_deck)
+        #    state.zones["rune_deck"] = rng.shuffle(p.rune_deck)
 
 
 
@@ -216,7 +214,8 @@ class Engine:
         id = s.next_card_id
         s.next_card_id += 1
 
-        card = CardInstance()
+        card = CardInstance(id, def_id, owner_id, owner_id)
+        return card
 
 
     def _emit(self, s, name, **data):
@@ -226,31 +225,24 @@ class Engine:
             cb(s, ev)
 
 
-# --------------------------------------------------------------------------
-# Demo: two random agents play a full game
-# --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
-    db = {
-        "grunt": CardDef("grunt", "Grunt", "unit", cost=1, might=2),
-        "rune": CardDef("rune", "Rune", "rune", cost=0, might=0),
-    }
-    engine = Engine(db)
-    wins = [0, 0]
-    for seed in range(200):
-        picker = random.Random(seed)
-        state = engine.new_game(
-            decks=[["grunt"] * 20] * 2,
-            rune_decks=[["rune"] * 12] * 2,
-            battlefield_ids=["bf_a", "bf_b"],
-            seed=seed,
-        )
-        steps = 0
-        while not engine.is_terminal(state) and steps < 5000:
-            state = engine.apply(state, picker.choice(engine.legal_actions(state)), inplace=True)
-            steps += 1
-        if state.winner is not None:
-            wins[state.winner] += 1
-    print("games finished, wins by player:", wins)
+    
+
+    engine = Engine(card_db)
+
+    card = engine._new_card_instance()
+
 
 
 
