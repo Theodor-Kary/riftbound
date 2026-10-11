@@ -10,6 +10,7 @@ import cards.cards
 # --------------------------------------------------------------------------
 # State: data only
 # --------------------------------------------------------------------------
+@dataclass(frozen=True)
 class Phase(Enum):
     AWAKEN = auto()
     BEGINNING = auto()  # scoring step (hold)
@@ -19,65 +20,54 @@ class Phase(Enum):
     END = auto()
 
 
-@dataclass
+
+@dataclass(frozen=True)
 class CardInstance:  # runtime object; many can share one CardDef
     id: int
     def_id: str
     owner_id: str
-    control_id: str = owner_id
+    control_id: str = None
     might_mod: int = 0
     energy_mod: int = 0
     damage: int = 0
     exhausted: bool = False
-    location: list = []
-
-
-
-
-
-
-
-@dataclass
-class PlayerState:
+    address: tuple = field(default_factory=tuple)
     
-    # Zones hold card_instance.id
 
 
 
-@dataclass
+
+@dataclass(frozen=True)
 class Player:
     id: int
     name: str
     agent_type: str
-    main_deck: Iterable[str]
-    rune_deck: Iterable[str]
+    main_deck: list
+    rune_deck: list
     champion : str
     battlefields: str
     legend : str
     score: int = 0
-    zones = {
-        "main_deck": [],
-        "rune_deck": [],
-        "hand": [],
-        "runes": [],
-        "trash": [],
-        "base": [],
-        "champion": []
-    }
 
-@dataclass
+
+
+@dataclass(frozen=True)
 class Battlefield:
     id: str
     units: list = field(default_factory=list)
 
 
-@dataclass
+
+
+
+@dataclass(frozen=True)
 class GameState:
-    cards: dict = {}
-    players: dict = {}
-    battlefields: dict = {}
-    rng: int = random.Random()
-    active: int = 0
+    cards: dict = field(default_factory=dict)
+    players: dict = field(default_factory=dict)
+    zones: dict = field(default_factory=dict)
+    rng: None
+    turn_order: list = field(default_factory=list)
+    active_player: str = None
     turn: int = 1
     phase: Phase = Phase.AWAKEN
     scored_this_turn: set = field(default_factory=set)
@@ -89,6 +79,3 @@ class GameState:
         # deepcopy is fine to start with; replace with a hand-written copy
         # once profiling says so. It also copies the RNG state.
         return copy.deepcopy(self)
-
-    def show():
-        return

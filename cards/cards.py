@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 import json
+from typing import *
 
 @dataclass(frozen=True)
 class CardDef:  # static, shared by every copy of a card
@@ -22,12 +23,12 @@ class CardCatalog:
     def __init__(self, cards: Mapping[str, CardDef]):
         self.cards = cards
 
-    def from_json(path) -> CardCatalog:
+    def from_json(path):
         data = json.load(open(path).read())
         cards = {}
         for key, d in data:
-            effect = _effect_from_text(d['effect'])
-            card = CardDef(key, d['name'], d['domain'], d['type'], d['supertype'], d['energy'], d['might'], d['power'], d['tags'], effect)
+            #effect = _effect_from_text(d['effect'])
+            card = CardDef(key, d['name'], d['domain'], d['type'], d['supertype'], d['energy'], d['might'], d['power'], d['tags'], d['effect'])
             cards[key] = card
 
         return CardCatalog(cards)
