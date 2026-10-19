@@ -165,6 +165,10 @@ class Engine:
 
     def _phase_beginning(self, s):
         for bf in s.zones["battlefields"]:
+            bf_control = self._battlefield_control(s, bf)
+            if s.active_player in bf_control and len(bf_control) == 1:
+                s.players[s.active_player].score += 1
+
 
 
 
@@ -261,6 +265,13 @@ class Engine:
     #         s.winner = player
 
 
+    def _battlefield_control(self, s, bf):
+        p_list = []
+        for card_id in s.zones[bf.address[0]][bf.address[1]]:
+            owner = s.cards[card_id].owner_id 
+            if owner not in p_list:
+                p_list.append()
+        return p_list
 
 
     
@@ -293,7 +304,11 @@ class Engine:
         print(f'{card_id} not in {loc}, cannot be found')
         return None
 
-
+    def _out(self, s):
+        for uid, player in s.players:
+            print(f"Player {uid}:")
+            for n, zone in s.zones[uid]:
+                
 
     def _emit(self, s, name, **data):
         ev = Event(name, data)

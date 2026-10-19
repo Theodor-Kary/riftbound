@@ -75,6 +75,8 @@ class GameState:
     log: list = field(default_factory=list)
     next_card_id = 0
 
+
+
     def clone(self) -> "GameState":
         # deepcopy is fine to start with; replace with a hand-written copy
         # once profiling says so. It also copies the RNG state.
